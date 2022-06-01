@@ -9,36 +9,28 @@ var stringifyJSON = function(obj) {
   var type = typeof obj;
   if (type === 'string') {
     return '"' + obj + '"';
-  }
-
-  if (type === 'number' || type === 'boolean') {
+  } else if (type === 'number' || type === 'boolean') {
     return obj.toString();
-  }
-
-  if (Array.isArray(obj)) {
+  } else if (Array.isArray(obj)) {
     var tempArray = [];
     for (var i = 0; i < obj.length; i++) {
       tempArray.push(stringifyJSON(obj[i]));
     }
-    console.log('before: ', tempArray);
     tempArray.join(', ');
 
-    console.log('after: ', tempArray);
     return '[' + tempArray + ']';
-  }
-
-  if (!obj) {
+  } else if (!obj) {
     return 'null';
-  }
-
-  if (type === 'object') {
-
-    if (obj) {
-      return '{}';
-    }
+  } else if (type === 'object' && obj) {
+    var result = [];
     for (var key in obj) {
-      return '{' + stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + '}';
+      if (obj[key] !== undefined && typeof obj[key] !== 'function') {
+        result.push(stringifyJSON(key) + ':' + stringifyJSON(obj[key]));
+      }
     }
+    return '{' + result + '}';
+  } else {
+    return obj;
   }
 
   // if function
